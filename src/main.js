@@ -13,10 +13,10 @@ var platforms;
 
 function create() {
 
-    //  We're going to be using physics, so enable the Arcade Physics system
+    //  Enable Arcade physics
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    //  A simple background for our game
+    //  Background
     background = game.add.sprite(0, 0, 'background');
     background.height = game.height
     background.width = game.width
@@ -27,7 +27,7 @@ function create() {
     //  physics for platform
     platforms.enableBody = true;
 
-    // Here we create the ground.
+    // create the ground.
     var ground = platforms.create(0, game.world.height - 8, 'ground');
     ground.alpha = 0
 
@@ -53,14 +53,28 @@ function create() {
     rightwall.body.immovable = true
 
     // creates our buddy
+    // buddy movement
+    //assignBuddyMovement = function(buddy) {
+      //  buddyposition = Math.floor(this.rnd.realInRange(50, this.world.width-50))
+       // buddyDelay = this.rnd.integerInRange(2000, 6000)
+   // }
     buddy = game.add.sprite(50, 50, 'box-buddy')
+    this.buildTacos
 
     // creates taco
-    taco = game.add.sprite(580, 50, 'taco')
-
+        tacoGroup = game.add.group()
+        tacoGroup.enableBody = true
+        for (var i = 1; i < 8; i++) {
+            var taco = tacoGroup.create(100,70, 'taco')
+            taco.width = 20
+            taco.height = 20
+            taco.anchor.set(0.5, 0.5)
+            taco.body.gravity.y = 300
+            taco.body.bounce.y = 0.5 + Math.random() * 0.2
+            taco.body.collideWorldBounds = true
+        }
     // enable physics
     game.physics.arcade.enable(buddy)
-    game.physics.arcade.enable(taco)
 
     // buddy physics properties
     buddy.body.bounce.y = 0.2
@@ -68,21 +82,14 @@ function create() {
     buddy.body.collideWorldBounds = true
     buddy.anchor.set(0.5, 0.5)
 
-    //taco
 
-    taco.enableBody = true
-    taco.width = 20
-    taco.height = 20
-    taco.body.gravity.y = 600
-    taco.body.bounce.y = 0.5 + Math.random() * 0.2
-    taco.anchor.set(0.5, 0.5)
 }
 
 function update() {
     // collide the buddy with stuff
     game.physics.arcade.collide(buddy, platforms)
-    game.physics.arcade.collide(taco, platforms)
-    game.physics.arcade.overlap(buddy, taco, eatTaco, null, this)
+    game.physics.arcade.collide(tacoGroup, platforms)
+    game.physics.arcade.overlap(buddy, tacoGroup, eatTaco, null, this)
 
     cursors = game.input.keyboard.createCursorKeys();
 
@@ -90,29 +97,25 @@ function update() {
     buddy.body.velocity.x = 0;
 
     // movement
-    if (cursors.left.isDown)
-    {
+    if (cursors.left.isDown) {
         //  Move to the left
         buddy.body.velocity.x = -150;
     }
-    else if (cursors.right.isDown)
-    {
+    else if (cursors.right.isDown) {
         //  Move to the right
         buddy.body.velocity.x = 150;
     }
     //  jump if on ground
-    if (cursors.up.isDown && buddy.body.touching.down)
-    {
+    if (cursors.up.isDown && buddy.body.touching.down) {
         buddy.body.velocity.y = -350;
     }
+
     // eat taco
-    function eatTaco (buddy, taco) {
+    function eatTaco(buddy, taco) {
         // remove taco from screen
         taco.kill()
     }
-
-    // find taco
-    /*radians = game.physics.arcade.angleBetween(buddy, taco);
-    degrees = radians * (180/Math.PI);
-    game.physics.arcade.velocityFromAngle(degrees, 100, buddy.body.velocity); */
+    if (buddy.x < taco.x) {
+        buddy.body.velocity.x = 150
+    }
 }
