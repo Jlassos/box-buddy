@@ -1,5 +1,36 @@
 var game = new Phaser.Game(640, 360, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
+var delays = {
+    frameCounter: 0,
+    createTaco: 0,
+    createTacoMinWait: 5
+}
+
+var entities = {
+    tacoCounter: 0,
+    createTaco: function(x, y) {
+        taco = game.add.sprite(x, y, 'taco')
+        taco.id = entities.tacoCounter++
+        game.physics.arcade.enable(taco)
+        //tacquito.width = 20
+        //tacquito.height = 20
+
+        // creates taco
+        //tacoGroup = game.add.group()
+        //tacoGroup.enableBody = true
+        //for (var i = 1; i < 8; i++) {
+        //var taco = tacoGroup.create(50, 50, 'taco')
+        taco.width = 20
+        taco.height = 20
+        taco.anchor.set(0.5, 0.5)
+        taco.body.gravity.y = 300
+        taco.body.bounce.y = 0.5 + Math.random() * 0.2
+        taco.body.collideWorldBounds = true
+        entities.tacos.push(taco)
+    },
+    tacos: []
+}
+
 function preload() {
 
     game.load.image('background', 'assets/box-background.png');
@@ -13,13 +44,13 @@ var platforms;
 
 function create() {
 
-    //  We're going to be using physics, so enable the Arcade Physics system
+    //  Enable Arcade physics
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    //  A simple background for our game
+    //  Background
     background = game.add.sprite(0, 0, 'background');
     background.height = game.height
-    background.width = game.width
+    background.width = game.width;
 
     //  platforms
     platforms = game.add.group();
@@ -27,7 +58,7 @@ function create() {
     //  physics for platform
     platforms.enableBody = true;
 
-    // Here we create the ground.
+    // create the ground.
     var ground = platforms.create(0, game.world.height - 8, 'ground');
     ground.alpha = 0
 
@@ -53,14 +84,21 @@ function create() {
     rightwall.body.immovable = true
 
     // creates our buddy
+    // buddy movement
+    //assignBuddyMovement = function(buddy) {
+      //  buddyposition = Math.floor(this.rnd.realInRange(50, this.world.width-50))
+       // buddyDelay = this.rnd.integerInRange(2000, 6000)
+   // }
     buddy = game.add.sprite(50, 50, 'box-buddy')
 
-    // creates taco
-    taco = game.add.sprite(580, 50, 'taco')
+    for(var i=1; i<8; i++) {
 
+
+        entities.createTaco(i * 50, 100)
+        //}
+    }
     // enable physics
     game.physics.arcade.enable(buddy)
-    game.physics.arcade.enable(taco)
 
     // buddy physics properties
     buddy.body.bounce.y = 0.2
@@ -68,21 +106,15 @@ function create() {
     buddy.body.collideWorldBounds = true
     buddy.anchor.set(0.5, 0.5)
 
-    //taco
 
-    taco.enableBody = true
-    taco.width = 20
-    taco.height = 20
-    taco.body.gravity.y = 600
-    taco.body.bounce.y = 0.5 + Math.random() * 0.2
-    taco.anchor.set(0.5, 0.5)
 }
 
 function update() {
+    delays.frameCounter += 1
     // collide the buddy with stuff
     game.physics.arcade.collide(buddy, platforms)
-    game.physics.arcade.collide(taco, platforms)
-    game.physics.arcade.overlap(buddy, taco, eatTaco, null, this)
+    //game.physics.arcade.collide(taco, platforms)
+    //game.physics.arcade.overlap(buddy, taco, eatTaco, null, this)
 
     cursors = game.input.keyboard.createCursorKeys();
 
@@ -90,29 +122,59 @@ function update() {
     buddy.body.velocity.x = 0;
 
     // movement
-    if (cursors.left.isDown)
-    {
+    if (cursors.left.isDown) {
         //  Move to the left
         buddy.body.velocity.x = -150;
     }
-    else if (cursors.right.isDown)
-    {
+    else if (cursors.right.isDown) {
         //  Move to the right
         buddy.body.velocity.x = 150;
     }
     //  jump if on ground
-    if (cursors.up.isDown && buddy.body.touching.down)
-    {
+    if (cursors.up.isDown && buddy.body.touching.down) {
         buddy.body.velocity.y = -350;
     }
-    // eat taco
-    function eatTaco (buddy, taco) {
-        // remove taco from screen
-        taco.kill()
+
+    timeSinceWeCreatedATaco = delays.frameCounter - delays.createTaco
+    if (game.input.activePointer.isDown && timeSinceWeCreatedATaco > delays.createTacoMinWait) {
+        console.log("tacquitos are so good im so hungry")
+        entities.createTaco(game.input.mousePointer.x, game.input.mousePointer.y);
+        delays.createTaco = delays.frameCounter
     }
 
-    // find taco
-    /*radians = game.physics.arcade.angleBetween(buddy, taco);
-    degrees = radians * (180/Math.PI);
-    game.physics.arcade.velocityFromAngle(degrees, 100, buddy.body.velocity); */
+    // eat taco
+    function eatTaco(buddy, taco) {
+        // remove taco from screen
+        console.log(taco.id)
+        taco.kill()
+    }
+    //console.log(entities.tacos)
+    if(entities.tacos.length > 0) {
+        // if there are any tacos move towards the closest
+        // get euclidian distance from all tacos, sort and move towards closest
+        // to move towards closest just check X, if your X < theirs, X+, if your x > yours X-
+
+        // plan B
+        // randomly get a taco, do the x check and move towards it
+        // entities.tacos[random.next(0, entities.tacos.length - 1)]
+        //console.log('tacos around')
+
+        // use javascript filter function to remove an item from the list
+    } else {
+        //console.log('dey gon')
+    }
+
+    entities.tacos.forEach(function(taco){
+        //console.log(taco)
+        /*if (buddy.x < taco.x) {
+            buddy.body.velocity.x = 150
+        }
+        else {
+            buddy.body.velocity.x = -150
+        }*/
+        //console.log(taco.y)
+
+        game.physics.arcade.overlap(buddy, taco, eatTaco, null, this)
+    });
+
 }
