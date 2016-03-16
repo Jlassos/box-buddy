@@ -1,8 +1,18 @@
 var game = new Phaser.Game(640, 360, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
-var tacoNumber = 8
+//  Create this many tacos on load
+//  If this value is 0 we get taco is not defined error
+var tacoNumber = 3
+
+//  Some Buddy Variables
 var buddySpeed = 100
 var buddyJump = 250
+//  random location to move to
+var randomLocation = undefined
+
+
+
+//  Delays for onclick
 var delays = {
     frameCounter: 0,
     createTaco: 0,
@@ -105,7 +115,24 @@ function create() {
     buddy.body.collideWorldBounds = true
     buddy.anchor.set(0.5, 0.5)
 
-
+    // random location gen
+    //  deciding where buddy wants to go 297 is middle integer
+    function getRandomLocation(){
+        return game.rnd.integerInRange(22, 616)
+    }
+    //  Time till eat taco
+    game.time.events.loop(Phaser.Timer.SECOND * 4, checkForLocation, this)
+    //  Check to see if there is a taco and declare target
+    function checkForLocation() {
+        if(entities.targettedTaco === undefined && entities.tacos.length > 0) {
+            entities.targettedTaco = entities.getRandomTaco()
+            console.dir(entities.targettedTaco + ' is target')
+        }
+        else {
+            randomLocation = getRandomLocation()
+            console.log(randomLocation + ' is target')
+        }
+    }
 
 }
 
@@ -121,23 +148,24 @@ function update() {
     cursors = game.input.keyboard.createCursorKeys();
 
     //  Debug stuff
+    //game.debug.text("Taco Time in: " + game.time.events.duration, 32, 32)
     //game.debug.body(buddy)
 
     //  MOVEMENT
     //  Move Left
-    if (cursors.left.isDown) {
-        //  Move to the left
-        buddy.body.velocity.x = -buddySpeed;
-    }
-    //  Move Right
-    else if (cursors.right.isDown) {
-        //  Move to the right
-        buddy.body.velocity.x = buddySpeed;
-    }
-    //  jump if on ground
-    if (cursors.up.isDown && buddy.body.touching.down) {
-        buddy.body.velocity.y = -buddyJump;
-    }
+    //if (cursors.left.isDown) {
+    //    //  Move to the left
+    //    buddy.body.velocity.x = -buddySpeed;
+    //}
+    ////  Move Right
+    //else if (cursors.right.isDown) {
+    //    //  Move to the right
+    //    buddy.body.velocity.x = buddySpeed;
+    //}
+    ////  jump if on ground
+    //if (cursors.up.isDown && buddy.body.touching.down) {
+    //    buddy.body.velocity.y = -buddyJump;
+    //}
 
     //  Click to create taco at mouse location
     timeSinceWeCreatedATaco = delays.frameCounter - delays.createTaco
@@ -147,13 +175,14 @@ function update() {
         delays.createTaco = delays.frameCounter
     }
 
-    //  eat taco
+    //  Eat taco
     function eatTaco(buddy, taco) {
+        //  reset target taco after being eaten
         entities.targettedTaco = undefined
         //  remove taco from screen
         taco.kill()
         //  update taco array
-        entities.tacos = entities.tacos.filter(function(item) {
+        entities.tacos = entities.tacos.filter(function (item) {
             return item.id != taco.id
         })
         //  taco eat debug
@@ -161,24 +190,31 @@ function update() {
         console.log(entities.tacos.length)
     }
 
-    //  Checks for tacos
-    if(entities.targettedTaco === undefined && entities.tacos.length > 0) {
-        entities.targettedTaco = entities.getRandomTaco()
-        console.dir(entities.targettedTaco + ' is target')
-    }
-
-    //  Moves to taco
-    if(entities.targettedTaco !== undefined) {
+    //  Moves to location
+    if (entities.targettedTaco !== undefined) {
         if (buddy.x < entities.targettedTaco.x) {
             buddy.body.velocity.x = buddySpeed
         }
         else {
             buddy.body.velocity.x = -buddySpeed
         }
+        //  move to random location
+    } else if (randomLocation !== undefined && entities.tacos.length == 0) {
+        if (buddy.x < randomLocation) {
+            buddy.body.velocity.x = buddySpeed
+        }
+        else {
+            buddy.body.velocity.x = -buddySpeed
+        }
     } else {
-        //  Wandering mode
         buddy.body.velocity.x = 0
     }
+
+    // When buddy reaches location set randomLocation to undefined
+    if (buddy.x >= randomLocation -1 && buddy.x < randomLocation + 1) {
+        randomLocation = undefined
+    }
+
     //  Give taco being eaten properties
     entities.tacos.forEach(function(taco){
         game.physics.arcade.overlap(buddy, taco, eatTaco, null, this)
