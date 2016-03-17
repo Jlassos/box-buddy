@@ -2,7 +2,7 @@ var game = new Phaser.Game(640, 360, Phaser.AUTO, '', { preload: preload, create
 
 //  Create this many tacos on load
 //  If this value is 0 we get taco is not defined error
-var tacoNumber = 3
+var tacoNumber = 0
 
 //  Some Buddy Variables
 var buddySpeed = 100
@@ -10,13 +10,11 @@ var buddyJump = 250
 //  random location to move to
 var randomLocation = undefined
 
-
-
 //  Delays for onclick
 var delays = {
     frameCounter: 0,
     createTaco: 0,
-    createTacoMinWait: 45
+    createTacoMinWait: 15
 }
 //var buddy = {
 //    speed: asdf,
@@ -32,9 +30,9 @@ var entities = {
     createTaco: function(x, y) {
         taco = game.add.sprite(x, y, 'taco')
         taco.id = entities.tacoCounter++
-        game.physics.arcade.enable(taco)
         taco.width = 20
         taco.height = 20
+        game.physics.arcade.enable(taco)
         taco.anchor.set(0.5, 0.5)
         taco.body.gravity.y = 400
         taco.body.bounce.y = 0.5 + Math.random() * 0.2
@@ -51,17 +49,22 @@ function preload() {
     game.load.image('ground', 'assets/platform.png');
     game.load.image('box-buddy', 'assets/box-buddy.png');
     game.load.image('taco', 'assets/taco.png')
+    game.load.audio('tacoCrunch', 'assets/tacocrunch.mp3')
 
 }
 
 var platforms;
-
+var tacoCrunch
 function create() {
 
     //  Enable Arcade physics
     game.physics.startSystem(Phaser.Physics.ARCADE);
     // enable P2 physics
     //game.physics.startSystem(Phaser.Physics.P2JS)
+
+    //  Add Game Sounds
+    tacoCrunch = game.add.audio('tacoCrunch')
+
 
     //  Background
     background = game.add.sprite(0, 0, 'background');
@@ -126,13 +129,17 @@ function create() {
     function checkForLocation() {
         if(entities.targettedTaco === undefined && entities.tacos.length > 0) {
             entities.targettedTaco = entities.getRandomTaco()
-            console.dir(entities.targettedTaco + ' is target')
+            console.dir(entities.targettedTaco)
+            console.log("^ target")
         }
         else {
             randomLocation = getRandomLocation()
-            console.log(randomLocation + ' is target')
+            console.log(randomLocation)
+            console.log("^ target")
         }
     }
+
+    //game.sound.setDecodedCallback([tacoCrunch], start, this);
 
 }
 
@@ -143,11 +150,11 @@ function update() {
     game.physics.arcade.collide(buddy, platforms)
     game.physics.arcade.collide(entities.tacos, platforms)
     game.physics.arcade.collide(entities.tacos, entities.tacos)
-    game.physics.arcade.overlap(buddy, taco, eatTaco, null, this)
+    //game.physics.arcade.overlap(buddy, taco, eatTaco, null, this)
 
     cursors = game.input.keyboard.createCursorKeys();
 
-    //  Debug stuff
+    //  Debug Options
     //game.debug.text("Taco Time in: " + game.time.events.duration, 32, 32)
     //game.debug.body(buddy)
 
@@ -170,7 +177,7 @@ function update() {
     //  Click to create taco at mouse location
     timeSinceWeCreatedATaco = delays.frameCounter - delays.createTaco
     if (game.input.activePointer.isDown && timeSinceWeCreatedATaco > delays.createTacoMinWait) {
-        console.log("summon taco " + game.input.mousePointer.x + ", " + game.input.mousePointer.y)
+        console.log("summon taco at " + game.input.mousePointer.x + ", " + game.input.mousePointer.y)
         entities.createTaco(game.input.mousePointer.x, game.input.mousePointer.y);
         delays.createTaco = delays.frameCounter
     }
@@ -179,6 +186,8 @@ function update() {
     function eatTaco(buddy, taco) {
         //  reset target taco after being eaten
         entities.targettedTaco = undefined
+        //  play taco sound
+        tacoCrunch.play('',0,1, false, false)
         //  remove taco from screen
         taco.kill()
         //  update taco array
@@ -187,7 +196,7 @@ function update() {
         })
         //  taco eat debug
         console.log('taco number ' + taco.id + ' so good')
-        console.log(entities.tacos.length)
+        console.log(entities.tacos.length + ' tacos left')
     }
 
     //  Moves to location
