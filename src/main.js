@@ -7,6 +7,9 @@ var tacoNumber = 0
 //  Some Buddy Variables
 var buddySpeed = 100
 var buddyJump = 250
+var tacosConsumed = 0
+var buddyHealth = 100
+var buddyMaxHealth
 //  random location to move to
 var randomLocation = undefined
 
@@ -59,8 +62,6 @@ function create() {
 
     //  Enable Arcade physics
     game.physics.startSystem(Phaser.Physics.ARCADE);
-    // enable P2 physics
-    //game.physics.startSystem(Phaser.Physics.P2JS)
 
     //  Add Game Sounds
     tacoCrunch = game.add.audio('tacoCrunch')
@@ -143,6 +144,10 @@ function create() {
 
 }
 
+function start() {
+
+}
+
 function update() {
     //  Counts frames for creating taco
     delays.frameCounter += 1
@@ -150,13 +155,12 @@ function update() {
     game.physics.arcade.collide(buddy, platforms)
     game.physics.arcade.collide(entities.tacos, platforms)
     game.physics.arcade.collide(entities.tacos, entities.tacos)
-    //game.physics.arcade.overlap(buddy, taco, eatTaco, null, this)
-
     cursors = game.input.keyboard.createCursorKeys();
 
     //  Debug Options
     //game.debug.text("Taco Time in: " + game.time.events.duration, 32, 32)
     //game.debug.body(buddy)
+
 
     //  MOVEMENT
     //  Move Left
@@ -187,15 +191,17 @@ function update() {
         //  reset target taco after being eaten
         entities.targettedTaco = undefined
         //  play taco sound
-        tacoCrunch.play('',0,1, false, false)
+        tacoCrunch.play('', 0, 1, false, false)
         //  remove taco from screen
         taco.kill()
         //  update taco array
         entities.tacos = entities.tacos.filter(function (item) {
             return item.id != taco.id
         })
+        tacosConsumed++
         //  taco eat debug
         console.log('taco number ' + taco.id + ' so good')
+        console.log(tacosConsumed + ' tacos consumed')
         console.log(entities.tacos.length + ' tacos left')
     }
 
@@ -220,13 +226,12 @@ function update() {
     }
 
     // When buddy reaches location set randomLocation to undefined
-    if (buddy.x >= randomLocation -1 && buddy.x < randomLocation + 1) {
+    if (buddy.x >= randomLocation - 1 && buddy.x < randomLocation + 1) {
         randomLocation = undefined
     }
 
     //  Give taco being eaten properties
-    entities.tacos.forEach(function(taco){
+    entities.tacos.forEach(function (taco) {
         game.physics.arcade.overlap(buddy, taco, eatTaco, null, this)
     });
-
 }
