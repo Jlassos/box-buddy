@@ -139,7 +139,7 @@ function create() {
         }
     }
 
-    //game.sound.setDecodedCallback([tacoCrunch], start, this);
+    game.sound.setDecodedCallback([tacoCrunch], update, this);
 
 }
 
