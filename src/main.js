@@ -49,7 +49,7 @@ function preload() {
     game.load.image('ground', 'assets/platform.png');
     game.load.image('box-buddy', 'assets/box-buddy.png');
     game.load.image('taco', 'assets/taco.png')
-    game.load.audio('tacoCrunch', 'assets/tacocrunch.mp3')
+    game.load.audio('tacoCrunch', 'assets/tacoCrunch.mp3')
 
 }
 
