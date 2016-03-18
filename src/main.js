@@ -167,6 +167,17 @@ function create() {
 
         }
     }
+    game.time.events.loop(Phaser.Timer.SECOND * 4, buddyHop, this)
+    function buddyHop() {
+        if (buddy.body.touching.down = true){
+            buddy.body.velocity.y = -150
+            buddy.body.drag = 0.5
+            //console.log('I GOT THE JUMPS')
+        }
+        else {
+            cursors.up.isDown = false
+        }
+    }
 
     game.sound.setDecodedCallback([tacoCrunch], update, this);
 }
@@ -201,9 +212,9 @@ function update() {
     //    buddy.body.velocity.x = buddySpeed;
     //}
     ////  jump if on ground
-    //if (cursors.up.isDown && buddy.body.touching.down) {
-    //    buddy.body.velocity.y = -buddyJump;
-    //}
+    if (cursors.up.isDown && buddy.body.touching.down) {
+        buddy.body.velocity.y = -buddyJump;
+    }
 
     //  Click to create taco at mouse location
     timeSinceWeCreatedATaco = delays.frameCounter - delays.createTaco
