@@ -157,7 +157,7 @@ function create() {
     }
     //  Get hungry loop
     //  decrease health by 5
-    game.time.events.loop(Phaser.Timer.SECOND * 5, getHungry, this)
+    game.time.events.loop(Phaser.Timer.SECOND * 1, getHungry, this)
     function getHungry() {
         if (healthBarFill.width > 0) {
             healthBarFill.width -= 5
@@ -167,7 +167,7 @@ function create() {
 
         }
     }
-    
+
     game.sound.setDecodedCallback([tacoCrunch], update, this);
 }
 
