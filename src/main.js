@@ -1,18 +1,21 @@
 var game = new Phaser.Game(640, 360, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
-//  Create this many tacos on load
-//  If this value is 0 we get taco is not defined error
-var tacoNumber = 0
-
+// Debug
+var showDebug = false
 //  Some Buddy Variables
 var buddySpeed = 100
-var buddyJump = 150
+var buddyJump = -150
 var tacosConsumed = 0
-var buddyHealth = 50
-var buddyMaxHealth = 50
+var timesHopped = 0
+var buddyHealth = 65
+var buddyMaxHealth = 75
 var buddyMinHealth = 0
+var healthBarHeight = 7
+var healthDecayTime = 0.3
+var healthDecayRate = 1
 //  random location to move to
 var randomLocation = undefined
+var randomHopTime = undefined
 
 //  Delays for onclick
 var delays = {
@@ -36,6 +39,7 @@ var entities = {
         taco.id = entities.tacoCounter++
         taco.width = 20
         taco.height = 20
+        taco.heal = 25
         game.physics.arcade.enable(taco)
         taco.anchor.set(0.5, 0.5)
         taco.body.gravity.y = 400
@@ -62,9 +66,12 @@ function preload() {
 var platforms;
 var tacoCrunch
 function create() {
+    // Debug Mode
+
+    //debugToggle.onDown.add(toggleDebug(), this)
 
     //  Enable Arcade physics
-    game.physics.startSystem(Phaser.Physics.ARCADE);
+    game.physics.startSystem(Phaser.Physics.ARCADE)
 
     //  Add Game Sounds
     tacoCrunch = game.add.audio('tacoCrunch')
@@ -107,23 +114,21 @@ function create() {
 
     //  creates our buddy - Refactor buddy into buddy entity
     buddyGroup = game.add.group()
-    buddy = buddyGroup.create(300, 100, 'box-buddy')
+    buddy = buddyGroup.create(300, 300, 'box-buddy')
     //  buddy health bar background
     healthBarBackground = buddyGroup.create(buddy.x, buddy.y -20, 'healthbarEmpty')
-    healthBarBackground.width = 50
-    healthBarBackground.height = 10
-    healthBarBackground.anchor.set(0.5, 0.5)
+    healthBarBackground.width = 75
+    healthBarBackground.height = healthBarHeight
+    healthBarBackground.anchor.y = 0.5
     // buddy health bar fill
     healthBarFill = buddyGroup.create(buddy.x, buddy.y -20, 'healthbarFull')
     healthBarFill.width = 0
-    healthBarFill.height = 10
-    healthBarFill.anchor.set(0.5, 0.5)
+    healthBarFill.height = healthBarHeight
+    healthBarFill.anchor.y = 0.5
+    //healthBarFill.cropEnabled = true
+    //widthLife = new Phaser.Rectangle(0, 0, healthBarFill.width - 25, healthBarFill.height)
+    //healthBarFill.crop(healthBarFill)
 
-
-    //  creates tacos
-    for(var i=1; i < tacoNumber; i++) {
-      entities.createTaco(i * 50, 100)
-    }
     //  enable physics
     //  need to redo buddy physics
     game.physics.arcade.enable(buddy)
@@ -138,6 +143,11 @@ function create() {
     //  deciding where buddy wants to go 297 is middle integer
     function getRandomLocation(){
         return game.rnd.integerInRange(22, 616)
+    }
+
+    // random hop time gen
+    function getHopTime(){
+        return game.rnd.integerInRange(1, 10)
     }
 
     //  Taco check
@@ -156,30 +166,43 @@ function create() {
         }
     }
     //  Get hungry loop
-    //  decrease health by 5
-    game.time.events.loop(Phaser.Timer.SECOND * 1, getHungry, this)
+    //  decrease health by 1 every .3 seconds
+    game.time.events.loop(Phaser.Timer.SECOND * healthDecayTime, getHungry, this)
     function getHungry() {
         if (healthBarFill.width > 0) {
-            healthBarFill.width -= 5
+            healthBarFill.width -= healthDecayRate
             console.log('Buddy is getting hungry!')
         }
         else {
 
         }
     }
-    game.time.events.loop(Phaser.Timer.SECOND * 4, buddyHop, this)
+    //  buddy hops
+    //randomHopTime = getHopTime()
+    buddyHopTime = game.time.events.loop(Phaser.Timer.SECOND * 7, buddyHop, this)
     function buddyHop() {
         if (buddy.body.touching.down = true){
-            buddy.body.velocity.y = -150
+            buddy.body.velocity.y = buddyJump
             buddy.body.drag = 0.5
-            //console.log('I GOT THE JUMPS')
-        }
-        else {
-            cursors.up.isDown = false
+            timesHopped++
+            //console.log('Hop was ' + randomHopTime + ' seconds')
+           //randomHopTime = getHopTime()
+
         }
     }
 
+
     game.sound.setDecodedCallback([tacoCrunch], update, this);
+}
+function toggleDebug() {
+
+    showDebug = (showDebug) ? false : true;
+
+    if (!showDebug)
+    {
+        game.debug.reset();
+    }
+
 }
 
 function start() {
@@ -196,25 +219,18 @@ function update() {
     cursors = game.input.keyboard.createCursorKeys();
 
     //  Debug Options
-    //game.debug.text("Taco Time in: " + game.time.events.duration, 32, 32)
-    //game.debug.body(buddy)
-
-
-    //  MOVEMENT
-    //  Move Left
-    //if (cursors.left.isDown) {
-    //    //  Move to the left
-    //    buddy.body.velocity.x = -buddySpeed;
-    //}
-    ////  Move Right
-    //else if (cursors.right.isDown) {
-    //    //  Move to the right
-    //    buddy.body.velocity.x = buddySpeed;
-    //}
-    ////  jump if on ground
-    if (cursors.up.isDown && buddy.body.touching.down) {
-        buddy.body.velocity.y = -buddyJump;
+    if (game.input.keyboard.isDown(Phaser.Keyboard.D)){
+        toggleDebug()
     }
+    if (showDebug){
+        game.debug.text("Tacos consumed " + tacosConsumed, 32, 32)
+        game.debug.text("Tacos on screen " + entities.tacos.length, 32, 52)
+        game.debug.text("Current Health " + healthBarFill.width, 32, 72)
+        game.debug.text("Times Hopped " + timesHopped, 32, 92)
+        game.debug.text("Target location x = " + randomLocation,32 , 112)
+        game.debug.body(buddy)
+    }
+
 
     //  Click to create taco at mouse location
     timeSinceWeCreatedATaco = delays.frameCounter - delays.createTaco
@@ -239,11 +255,12 @@ function update() {
         //  how many tacos eaten
         tacosConsumed++
         //  health increase
-        if (healthBarFill.width <= buddyMaxHealth) {
-            healthBarFill.width += 5
+        if (healthBarFill.width + taco.heal < buddyMaxHealth) {
+            healthBarFill.width += taco.heal
         }
         else {
-            console.log('Health Full!')
+            healthBarFill.width = buddyMaxHealth
+            //console.log('Too Overload!!')
         }
         //  taco eat debug
         console.log('taco number ' + taco.id + ' so good')
@@ -281,8 +298,9 @@ function update() {
         game.physics.arcade.overlap(buddy, taco, eatTaco, null, this)
     });
     // healthbar update position
-    healthBarBackground.x = buddy.x
+    healthBarBackground.x = buddy.x -35
     healthBarBackground.y = buddy.y -20
-    healthBarFill.x = buddy.x
+    healthBarFill.x = buddy.x - 35
     healthBarFill.y = buddy.y -20
+    //
 }
