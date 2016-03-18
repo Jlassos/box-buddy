@@ -59,6 +59,7 @@ function preload() {
     game.load.image('taco', 'assets/taco.png')
     game.load.image('healthbarFull', 'assets/healthbarFull.png')
     game.load.image('healthbarEmpty', 'assets/healthbarEmpty.png')
+    game.load.image('feedMe', 'assets/feedme.png')
     game.load.audio('tacoCrunch', 'assets/tacoCrunch.mp3')
 
 }
@@ -125,9 +126,11 @@ function create() {
     healthBarFill.width = 0
     healthBarFill.height = healthBarHeight
     healthBarFill.anchor.y = 0.5
-    //healthBarFill.cropEnabled = true
-    //widthLife = new Phaser.Rectangle(0, 0, healthBarFill.width - 25, healthBarFill.height)
-    //healthBarFill.crop(healthBarFill)
+    // buddy feed me message
+    feedMe = buddyGroup.create(buddy.x, buddy.y - 40, 'feedMe')
+    feedMe.alpha = 0
+    feedMe.anchor.set(0.5, 0.5)
+    feedMe.scale.setTo(0.0,0.0)
 
     //  enable physics
     //  need to redo buddy physics
@@ -177,6 +180,7 @@ function create() {
 
         }
     }
+
     //  buddy hops
     //randomHopTime = getHopTime()
     buddyHopTime = game.time.events.loop(Phaser.Timer.SECOND * 7, buddyHop, this)
@@ -194,15 +198,13 @@ function create() {
 
     game.sound.setDecodedCallback([tacoCrunch], update, this);
 }
+//  toggles the debug
 function toggleDebug() {
-
     showDebug = (showDebug) ? false : true;
-
     if (!showDebug)
     {
         game.debug.reset();
     }
-
 }
 
 function start() {
@@ -238,6 +240,17 @@ function update() {
         console.log("Summon taco at " + game.input.mousePointer.x + ", " + game.input.mousePointer.y)
         entities.createTaco(game.input.mousePointer.x, game.input.mousePointer.y);
         delays.createTaco = delays.frameCounter
+    }
+    //  feed me message
+    if (healthBarFill.width <= 0) {
+        feedMe.alpha = 1
+        feedMe.x = buddy.x
+        feedMe.y = buddy.y - 35
+        s = game.add.tween(feedMe.scale)
+        s.to({x: 0.35, y: 0.35}, 1500, Phaser.Easing.Back.Out, true, 0, true)
+    } else {
+        feedMe.alpha = 0
+        feedMe.scale.setTo(0.0,0.0)
     }
 
     //  Eat taco
