@@ -6,6 +6,7 @@ var showDebug = false
 var buddySpeed = 100
 var buddyJump = -150
 var tacosConsumed = 0
+var amountHealed = 0
 var timesHopped = 0
 var buddyHealth = 65
 var buddyMaxHealth = 75
@@ -112,6 +113,8 @@ function create() {
     ground.body.immovable = true
     leftwall.body.immovable = true
     rightwall.body.immovable = true
+
+
 
     //  creates our buddy - Refactor buddy into buddy entity
     buddyGroup = game.add.group()
@@ -229,7 +232,8 @@ function update() {
         game.debug.text("Tacos on screen " + entities.tacos.length, 32, 52)
         game.debug.text("Current Health " + healthBarFill.width, 32, 72)
         game.debug.text("Times Hopped " + timesHopped, 32, 92)
-        game.debug.text("Target location x = " + randomLocation,32 , 112)
+        game.debug.text("Amount Healed " + amountHealed, 32, 112)
+        game.debug.text("Target location x = " + randomLocation,32 , 132)
         game.debug.body(buddy)
     }
 
@@ -252,11 +256,31 @@ function update() {
         feedMe.alpha = 0
         feedMe.scale.setTo(0.0,0.0)
     }
+    // Floating taco text
+    function tacoText() {
+        //text = game.add.text(buddy.x, buddy.y - 45, taco.heal, {font: "65px Arial", fill: "#ff0044", align: "center"});
+        //text.anchor.setTo(0.5, 0.5);
+        var moveText = game.add.text(buddy.x - 10, buddy.y -45, '+' + taco.heal, {font: "15px Arial", fill: "#32CD32", align: "center"});
+        var tween = game.add.tween(moveText).to({
+            x: [buddy.x - 10, buddy.x - 60, buddy.x - 60],
+            y: [buddy.y -60, buddy.y - 90, buddy.y],
+        }, 950,Phaser.Easing.Quadratic.Out, true).interpolation(function(v, k){
+            return Phaser.Math.bezierInterpolation(v, k);
+        })
+        game.add.tween(moveText).to({alpha: 0}, 700, "Linear", true)
+        game.time.events.add(Phaser.Timer.SECOND * 1, cleanUpTacoText, this)
+        function cleanUpTacoText() {
+            moveText.destroy()
+        }
+
+    }
 
     //  Eat taco
     function eatTaco(buddy, taco) {
         //  reset target taco after being eaten
         entities.targettedTaco = undefined
+        // plays floating taco text
+        tacoText()
         //  play taco sound
         tacoCrunch.play('', 0, 1, false, false)
         //  remove taco from screen
@@ -267,6 +291,7 @@ function update() {
         })
         //  how many tacos eaten
         tacosConsumed++
+        amountHealed += taco.heal
         //  health increase
         if (healthBarFill.width + taco.heal < buddyMaxHealth) {
             healthBarFill.width += taco.heal
