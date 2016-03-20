@@ -68,9 +68,6 @@ function preload() {
 var platforms;
 var tacoCrunch
 function create() {
-    // Debug Mode
-
-    //debugToggle.onDown.add(toggleDebug(), this)
 
     //  Enable Arcade physics
     game.physics.startSystem(Phaser.Physics.ARCADE)
@@ -185,20 +182,14 @@ function create() {
     }
 
     //  buddy hops
-    //randomHopTime = getHopTime()
     buddyHopTime = game.time.events.loop(Phaser.Timer.SECOND * 7, buddyHop, this)
     function buddyHop() {
         if (buddy.body.touching.down = true){
             buddy.body.velocity.y = buddyJump
             buddy.body.drag = 0.5
             timesHopped++
-            //console.log('Hop was ' + randomHopTime + ' seconds')
-           //randomHopTime = getHopTime()
-
         }
     }
-
-
     game.sound.setDecodedCallback([tacoCrunch], update, this);
 }
 //  toggles the debug
@@ -228,6 +219,7 @@ function update() {
         toggleDebug()
     }
     if (showDebug){
+        game.debug.cameraInfo(game.camera, 390, 32)
         game.debug.text("Tacos consumed " + tacosConsumed, 32, 32)
         game.debug.text("Tacos on screen " + entities.tacos.length, 32, 52)
         game.debug.text("Current Health " + healthBarFill.width, 32, 72)
@@ -258,8 +250,6 @@ function update() {
     }
     // Floating taco text
     function tacoText() {
-        //text = game.add.text(buddy.x, buddy.y - 45, taco.heal, {font: "65px Arial", fill: "#ff0044", align: "center"});
-        //text.anchor.setTo(0.5, 0.5);
         var moveText = game.add.text(buddy.x - 10, buddy.y -45, '+' + taco.heal, {font: "15px Arial", fill: "#32CD32", align: "center"});
         var tween = game.add.tween(moveText).to({
             x: [buddy.x - 10, buddy.x - 60, buddy.x - 60],
@@ -272,7 +262,6 @@ function update() {
         function cleanUpTacoText() {
             moveText.destroy()
         }
-
     }
 
     //  Eat taco
