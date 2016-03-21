@@ -232,14 +232,14 @@ function update() {
 
     //  Click to create taco at mouse location
     timeSinceWeCreatedATaco = delays.frameCounter - delays.createTaco
+    //if (game.input.activePointer.isDown && timeSinceWeCreatedATaco > delays.createTacoMinWait) {
+    //    console.log("Summon taco at " + game.input.mousePointer.x + ", " + game.input.mousePointer.y)
+    //    entities.createTaco(game.input.mousePointer.x, game.input.mousePointer.y);
+    //    delays.createTaco = delays.frameCounter
+    //}
     if (game.input.activePointer.isDown && timeSinceWeCreatedATaco > delays.createTacoMinWait) {
-        console.log("Summon taco at " + game.input.mousePointer.x + ", " + game.input.mousePointer.y)
-        entities.createTaco(game.input.mousePointer.x, game.input.mousePointer.y);
-        delays.createTaco = delays.frameCounter
-    }
-    if (game.input.pointer1.isDown && timeSinceWeCreatedATaco > delays.createTacoMinWait) {
-        console.log("Summon taco at " + game.input.pointer1.x + ", " + game.input.pointer1.y)
-        entities.createTaco(game.input.pointer1.x, game.input.pointer1.y);
+        console.log("Summon taco at " + game.input.activePointer.x + ", " + game.input.activePointer.y)
+        entities.createTaco(game.input.activePointer.x, game.input.activePointer.y);
         delays.createTaco = delays.frameCounter
     }
     //  feed me message
