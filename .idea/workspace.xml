@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6752060f-d401-492d-bd0f-17ed49dd199a" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main.js" afterPath="$PROJECT_DIR$/src/main.js" />
     </list>
     <ignored path="box-buddy.iws" />
@@ -37,8 +36,8 @@
       <file leaf-file-name="main.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.52619845">
-              <caret line="241" column="70" selection-start-line="241" selection-start-column="70" selection-end-line="241" selection-end-column="70" />
+            <state vertical-scroll-proportion="0.393534">
+              <caret line="234" column="0" selection-start-line="234" selection-start-column="0" selection-end-line="238" selection-end-column="5" />
               <folding />
             </state>
           </provider>
@@ -689,8 +688,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.52619845">
-          <caret line="241" column="70" selection-start-line="241" selection-start-column="70" selection-end-line="241" selection-end-column="70" />
+        <state vertical-scroll-proportion="0.393534">
+          <caret line="234" column="0" selection-start-line="234" selection-start-column="0" selection-end-line="238" selection-end-column="5" />
           <folding />
         </state>
       </provider>

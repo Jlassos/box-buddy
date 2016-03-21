@@ -238,7 +238,7 @@ function update() {
         delays.createTaco = delays.frameCounter
     }
     if (game.input.pointer1.isDown && timeSinceWeCreatedATaco > delays.createTacoMinWait) {
-        console.log("Summon taco at " + game.input.mousePointer.x + ", " + game.input.mousePointer.y)
+        console.log("Summon taco at " + game.input.pointer1.x + ", " + game.input.pointer1.y)
         entities.createTaco(game.input.pointer1.x, game.input.pointer1.y);
         delays.createTaco = delays.frameCounter
     }
