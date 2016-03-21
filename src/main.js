@@ -237,6 +237,11 @@ function update() {
         entities.createTaco(game.input.mousePointer.x, game.input.mousePointer.y);
         delays.createTaco = delays.frameCounter
     }
+    if (game.input.pointer1.isDown && timeSinceWeCreatedATaco > delays.createTacoMinWait) {
+        console.log("Summon taco at " + game.input.mousePointer.x + ", " + game.input.mousePointer.y)
+        entities.createTaco(game.input.pointer1.x, game.input.pointer1.y);
+        delays.createTaco = delays.frameCounter
+    }
     //  feed me message
     if (healthBarFill.width <= 0) {
         feedMe.alpha = 1
