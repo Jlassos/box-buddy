@@ -1,4 +1,7 @@
-var game = new Phaser.Game(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.CANVAS, 'gameArea', { preload: preload, create: create, update: update });
+
+// Trying to get different screen sizes to work
+//var game = new Phaser.Game(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.CANVAS, 'gameArea', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(960, 640, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
 // Debug
 var showDebug = false
@@ -54,7 +57,7 @@ var entities = {
 
 function preload() {
 
-    game.load.image('background', 'assets/box-background.png');
+    game.load.image('background', 'assets/box-background2.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('box-buddy', 'assets/box-buddy.png');
     game.load.image('taco', 'assets/taco.png')
@@ -79,10 +82,10 @@ function create() {
     //  Background
     background = game.add.sprite(0, 0, 'background');
     background.height = game.height
-    background.width = game.width;
+    background.width = game.width
 
     //  platforms
-    platforms = game.add.group();
+    platforms = game.add.group()
 
     //  physics for platform
     platforms.enableBody = true;
