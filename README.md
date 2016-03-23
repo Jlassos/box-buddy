@@ -1,4 +1,4 @@
-# Box Buddy
+# [Box Buddy](http://jlassos.github.io/box-buddy/)
 A Virtual pet Simulation
 
 ## Input
