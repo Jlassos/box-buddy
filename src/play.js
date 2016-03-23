@@ -13,12 +13,12 @@ window.onload = function() {
         game.stage.backgroundColor = 'black'
 
         if (game.device.desktop === false) {
-            game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL
+            game.scale.scaleMode = Phaser.ScaleManager.RESIZE
             game.scale.pageAlignHorizontally = true
             game.scale.pageAlignVertically = true
             game.scale.forceOrientation(true, false)
-            game.scale.enterIncorrectOrientation.add(this.enterIncorrectOrientation, this)
-            game.scale.leaveIncorrectOrientation.add(this.leaveIncorrectOrientation, this)
+            //game.scale.enterIncorrectOrientation.add(this.enterIncorrectOrientation, this)
+            //game.scale.leaveIncorrectOrientation.add(this.leaveIncorrectOrientation, this)
         }
     }
 
