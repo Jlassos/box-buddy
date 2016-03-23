@@ -1,23 +1,29 @@
 window.onload = function() {
 // Trying to get different screen sizes to work
 //var game = new Phaser.Game(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.CANVAS, 'gameArea', { preload: preload, create: create, update: update });
-    var game = new Phaser.Game("100%", "100%", Phaser.CANVAS, '', {
+    var game = new Phaser.Game('100%', '100%', Phaser.CANVAS, '', {
+        init: init,
         preload: preload,
         create: create,
         update: update,
-        resize: onResize,
     })
 
-// function to scale up the game to full screen
-    function goFullScreen() {
-        // setting a background color
-        game.stage.backgroundColor = "#555555";
-        game.scale.pageAlignHorizontally = true;
-        game.scale.pageAlignVertically = true;
-        // using RESIZE scale mode
-        game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
-        game.scale.setScreenSize(true);
+    function init() {
+        game.scale.scaleMode = Phaser.ScaleManager.RESIZE
+        game.stage.backgroundColor = 'black'
+
+        if (game.device.desktop === false) {
+            game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL
+            game.scale.pageAlignHorizontally = true
+            game.scale.pageAlignVertically = true
+            game.scale.forceOrientation(true, false)
+            game.scale.enterIncorrectOrientation.add(this.enterIncorrectOrientation, this)
+            game.scale.leaveIncorrectOrientation.add(this.leaveIncorrectOrientation, this)
+        }
     }
+
+
+
 
 // Debug
     var showDebug = false
@@ -49,11 +55,20 @@ window.onload = function() {
         createTaco: 0,
         createTacoMinWait: 15
     }
-//var buddy = {
-//    speed: asdf,
-//    jump: awhefawef
-//
-//}
+
+    // Buddy will exist here eventually
+    //var buddy = {
+    //    health: 100,
+    //    maxHealth: 100,
+    //    healthDecayTime: 0.3,
+    //    healthDecayRate: 1,
+    //    speed: 100,
+    //    jump: -150,
+    //    tacosConsumed: 0,
+    //    healed: 0,
+    //    hopped: 0,
+    //}
+
     var entities = {
         tacoCounter: 0,
         targettedTaco: undefined,
@@ -94,7 +109,6 @@ window.onload = function() {
     var tacoCrunch
 
     function create() {
-
         //  Enable Arcade physics
         game.physics.startSystem(Phaser.Physics.ARCADE)
 
@@ -115,6 +129,7 @@ window.onload = function() {
 
         //  create the ground.
         var ground = platforms.create(0, game.world.height - 8, 'ground');
+        ground.width = game.world.width + 20
         ground.alpha = 0
 
         //  CREATE WALLS
@@ -124,13 +139,13 @@ window.onload = function() {
         leftwall.height = game.height
         leftwall.alpha = 0
         //  right wall
-        var rightwall = platforms.create(616, 0, 'ground')
+        var rightwall = platforms.create(game.width, 0, 'ground')
         rightwall.width = 20
         rightwall.height = game.height
         rightwall.alpha = 0
 
         //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-        ground.scale.setTo(2, 2);
+        //ground.scale.setTo(2, 1);
 
         //  This stops it from falling away when you jump on it
         ground.body.immovable = true
@@ -169,7 +184,7 @@ window.onload = function() {
         // random location gen
         //  deciding where buddy wants to go 297 is middle integer
         function getRandomLocation() {
-            return game.rnd.integerInRange(22, 616)
+            return game.rnd.integerInRange(22, game.world.width)
         }
 
         // random hop time gen
@@ -217,7 +232,6 @@ window.onload = function() {
         }
 
         game.sound.setDecodedCallback([tacoCrunch], update, this);
-        onResize()
     }
 
 //  toggles the debug
@@ -226,22 +240,6 @@ window.onload = function() {
         if (!showDebug) {
             game.debug.reset();
         }
-    }
-
-    function start() {
-
-    }
-
-    function onResize() {
-        // this function is called each time the browser is resized, and re-positions
-        // game elements to keep them in their right position according to game size
-        //levelText.x = Math.round((game.width-levelText.width)/2);
-        //levelText.y = game.height;
-        //titleText.x = Math.round((game.width-titleText.width)/2);
-        fixedGroup.x = Math.round((game.width - 320) / 2);
-        fixedGroup.y = Math.round((game.height - 320) / 2);
-        movingGroup.x = Math.round((game.width - 320) / 2);
-        movingGroup.y = Math.round((game.height - 320) / 2);
     }
 
     function update() {
@@ -290,7 +288,7 @@ window.onload = function() {
         // Floating taco text
         function tacoText() {
             var moveText = game.add.text(buddy.x - 10, buddy.y - 45, '+' + taco.heal, {
-                font: "15px Arial",
+                font: "20px consolas",
                 fill: "#32CD32",
                 align: "center"
             });
@@ -300,7 +298,7 @@ window.onload = function() {
             }, 950, Phaser.Easing.Quadratic.Out, true).interpolation(function (v, k) {
                 return Phaser.Math.bezierInterpolation(v, k);
             })
-            game.add.tween(moveText).to({alpha: 0}, 700, "Linear", true)
+            game.add.tween(moveText).to({alpha: 0}, 900, "Linear", true)
             game.time.events.add(Phaser.Timer.SECOND * 1, cleanUpTacoText, this)
             function cleanUpTacoText() {
                 moveText.destroy()
