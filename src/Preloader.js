@@ -5,7 +5,7 @@ BoxBuddy.Preloader = function (game) {
 BoxBuddy.Preloader.prototype = {
     preload: function() {
         // Loading label
-        var loadingLabel = this.add.text(500, 500, 'Loading......', {font: '30px Consolas', fill: '#ffffff'})
+        var loadingLabel = this.add.text(game.world.centerX, game.world.centerY, 'Loading......', {font: '30px Consolas', fill: '#ffffff'})
 
 
         // Load assets
