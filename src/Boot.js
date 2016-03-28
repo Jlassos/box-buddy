@@ -9,7 +9,7 @@ BoxBuddy.Boot = function (game) {
 
 }
 
-BoxBuddy.Boot.prototype = {
+BoxBuddy.Boot = {
     init: function () {
 
         this.input.maxPointers = 1;
@@ -25,7 +25,7 @@ BoxBuddy.Boot.prototype = {
         else
         {
             this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-            this.scale.setMinMax(480, 260, 1024, 768);
+            this.scale.setMinMax(480, 260, 960, 640);
             this.scale.pageAlignHorizontally = true;
             this.scale.pageAlignVertically = true;
             this.scale.forceOrientation(true, false);
