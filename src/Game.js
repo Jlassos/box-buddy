@@ -19,9 +19,6 @@ var healthDecayRate = 1;
 var randomLocation = undefined;
 var randomHopTime = undefined;
 
-// Variables used to create groups. The fist group is called fixedGroup, it will contain
-// all non-moveable elements (everything but crates and player).
-
 //  Delays for onclick
 var delays = {
     frameCounter: 0,
@@ -56,16 +53,6 @@ var platforms;
 var tacoCrunch
 
 BoxBuddy.Game.prototype = {
-//Trying to get different screen sizes to work
-//var playState = new Phaser.Game(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.CANVAS, 'gameArea', { preload: preload, create: create, update: update });
-//    var playState = new Phaser.Game('100%', '100%', Phaser.CANVAS, '', {
-//        init: init,
-//        preload: preload,
-//        create: create,
-//        update: update,
-//    })
-
-
 
 // Buddy will exist here eventually
 //var buddy = {
@@ -79,22 +66,6 @@ BoxBuddy.Game.prototype = {
 //    healed: 0,
 //    hopped: 0,
 //}
-
-
-
-// function preload() {
-//
-//     game.load.image('background', 'assets/box-background2.png');
-//     game.load.image('ground', 'assets/platform.png');
-//     game.load.image('box-buddy', 'assets/box-buddy.png');
-//     game.load.image('taco', 'assets/taco.png')
-//     game.load.image('healthbarFull', 'assets/healthbarFull.png')
-//     game.load.image('healthbarEmpty', 'assets/healthbarEmpty.png')
-//     game.load.image('feedMe', 'assets/feedme.png')
-//     game.load.audio('tacoCrunch', 'assets/tacoCrunch.mp3')
-//
-// }
-
 
     create: function () {
     //  Enable Arcade physics
@@ -132,9 +103,6 @@ BoxBuddy.Game.prototype = {
     rightwall.height = game.height
     rightwall.alpha = 0
 
-    //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-    //ground.scale.setTo(2, 1);
-
     //  This stops it from falling away when you jump on it
     ground.body.immovable = true
     leftwall.body.immovable = true
@@ -170,7 +138,6 @@ BoxBuddy.Game.prototype = {
     buddy.anchor.set(0.5, 0.5)
 
     // random location gen
-    //  deciding where buddy wants to go 297 is middle integer
     function getRandomLocation() {
         return game.rnd.integerInRange(22, game.world.width)
     }
@@ -218,7 +185,7 @@ BoxBuddy.Game.prototype = {
             timesHopped++
         }
     }
-        
+
 },
 
 //  toggles the debug
@@ -240,7 +207,8 @@ update: function() {
 
     //  Debug Options
     if (game.input.keyboard.isDown(Phaser.Keyboard.D)) {
-        toggleDebug()
+        console.log(BoxBuddy.Game);
+        this.toggleDebug()
     }
     if (showDebug) {
         game.debug.cameraInfo(game.camera, 390, 32)
