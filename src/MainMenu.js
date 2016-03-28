@@ -1,7 +1,7 @@
 BoxBuddy.MainMenu =  function (game) {
     //this.music = null
 }
-BoxBuddy.MainMenu.prototype = {
+BoxBuddy.MainMenu = {
     create: function () {
 
         var nameLabel = this.add.text(this.world.centerX, this.world.centerY, 'Box Buddy', {

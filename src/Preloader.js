@@ -2,7 +2,7 @@ BoxBuddy.Preloader = function (game) {
 
 }
 
-BoxBuddy.Preloader.prototype = {
+BoxBuddy.Preloader = {
     preload: function() {
         // Loading label
         var loadingLabel = this.add.text(game.world.centerX, game.world.centerY, 'Loading......', {font: '30px Consolas', fill: '#ffffff'})
