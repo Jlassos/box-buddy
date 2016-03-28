@@ -207,7 +207,6 @@ update: function() {
 
     //  Debug Options
     if (game.input.keyboard.isDown(Phaser.Keyboard.D)) {
-        console.log(BoxBuddy.Game);
         this.toggleDebug()
     }
     if (showDebug) {
