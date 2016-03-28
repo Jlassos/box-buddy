@@ -16,14 +16,14 @@ BoxBuddy.Boot = {
 
         if (this.game.device.desktop)
         {
-            this.scale.scaleMode = Phaser.ScaleManager.RESIZE;
+            this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
             this.scale.setMinMax(480, 260, 1024, 768);
             this.scale.pageAlignHorizontally = true;
             this.scale.pageAlignVertically = true;
         }
         else
         {
-            this.scale.scaleMode = Phaser.ScaleManager.RESIZE;
+            this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
             this.scale.setMinMax(480, 260, 1024, 768);
             this.scale.pageAlignHorizontally = true;
             this.scale.pageAlignVertically = true;
@@ -51,11 +51,9 @@ BoxBuddy.Boot = {
     },
     // Not currently Used
     gameResized: function (width, height) {
-        this.game.scale.refresh()
     },
 
     enterIncorrectOrientation: function () {
-        this.scale.refresh()
 
         BoxBuddy.orientated = false;
 
@@ -64,11 +62,12 @@ BoxBuddy.Boot = {
     },
 
     leaveIncorrectOrientation: function () {
-        this.scale.refresh()
 
         BoxBuddy.orientated = true;
 
         document.getElementById('orientation').style.display = 'none';
+        game.scale.refresh()
+
 
     }
 
