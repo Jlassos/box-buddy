@@ -52,7 +52,7 @@ var entities = {
 var platforms;
 var tacoCrunch
 
-BoxBuddy.Game.prototype = {
+BoxBuddy.Game = {
 
 // Buddy will exist here eventually
 //var buddy = {
