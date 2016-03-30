@@ -1,5 +1,6 @@
 # [Box Buddy](http://jlassos.github.io/box-buddy/)
 A Virtual pet Simulation
+<img src ="https://raw.githubusercontent.com/Jlassos/box-buddy/master/boxbuddy.PNG">
 
 ## Input
 1. Click or touch to summon taco
