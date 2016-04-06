@@ -4,11 +4,11 @@ BoxBuddy.MainMenu =  function (game) {
 BoxBuddy.MainMenu = {
     create: function () {
 
-        var nameLabel = this.add.text(this.world.centerX, this.world.centerY, 'Box Buddy', {
+        var nameLabel = this.add.text(window.innerHeight / 2, window.innerWidth / 2, 'Box Buddy', {
             font: '50px Arial', fill: '#ffffff'
         })
 
-        var startLabel = this.add.text(this.world.centerX + 50, this.world.centerY + 70, 'Click to start', {
+        var startLabel = this.add.text(window.innerHeight / 2, window.innerWidth / 2 + 50, 'Click to start', {
             font: '25px Arial',
             fill: '#ffffff'
         })
@@ -23,3 +23,4 @@ BoxBuddy.MainMenu = {
         this.state.start('Game')
     }
 }
+//this.scale.setGameSize(window.innerWidth, window.innerHeight)

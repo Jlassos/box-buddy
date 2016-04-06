@@ -3,18 +3,21 @@ BoxBuddy.Game = function (game) {
 }
 // Debug
 var showDebug = false;
+
+
 //  Some Buddy Variables
 var buddySpeed = 100;
 var buddyJump = -150;
 var tacosConsumed = 0;
 var amountHealed = 0;
 var timesHopped = 0;
-var buddyHealth = 65;
 var buddyMaxHealth = 75;
-var buddyMinHealth = 0;
 var healthBarHeight = 7;
 var healthDecayTime = 0.3;
 var healthDecayRate = 1;
+
+
+
 //  random location to move to
 var randomLocation = undefined;
 var randomHopTime = undefined;
