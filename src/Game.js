@@ -52,23 +52,30 @@ var entities = {
     tacos: []
 }
 
+var eggEntity = {
+  eggId: 0,
+  eggNumber: 0,
+  createEgg: function (x, y) {
+    egg = game.add.sprite(game.world.width / 2, game.world.height / 2, 'egg')
+    egg.id = eggEntity.eggId++
+    egg.width = 40
+    egg.height = 50
+    game.physics.arcade.enable(egg)
+    egg.anchor.set(0.5,0.5)
+    egg.body.gravity.y = 400
+    egg.body.bounce.y = 0.5 + Math.random() * 0.1
+    egg.body.collideWorldBounds = true
+    eggEntity.eggs.push(egg)
+    console.log('Summon Egg')
+    eggEntity.eggNumber =+ 1
+  },
+  eggs: []
+}
+
 var platforms;
 var tacoCrunch
 
 BoxBuddy.Game = {
-
-// Buddy will exist here eventually
-//var buddy = {
-//    health: 100,
-//    maxHealth: 100,
-//    healthDecayTime: 0.3,
-//    healthDecayRate: 1,
-//    speed: 100,
-//    jump: -150,
-//    tacosConsumed: 0,
-//    healed: 0,
-//    hopped: 0,
-//}
 
     create: function () {
     //  Enable Arcade physics
@@ -144,6 +151,11 @@ BoxBuddy.Game = {
     function getRandomLocation() {
         return game.rnd.integerInRange(22, game.world.width)
     }
+    // EGG SUMMON
+    spawnEgg = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
+    if (eggEntity.eggNumber < 1) {
+      spawnEgg.onDown.add(eggEntity.createEgg, this)
+    }
 
     // random hop time gen
     function getHopTime() {
@@ -206,6 +218,7 @@ update: function() {
     game.physics.arcade.collide(buddy, platforms)
     game.physics.arcade.collide(entities.tacos, platforms)
     game.physics.arcade.collide(entities.tacos, entities.tacos)
+    game.physics.arcade.collide(eggEntity.eggs, platforms)
     cursors = game.input.keyboard.createCursorKeys();
 
     //  Debug Options
@@ -213,14 +226,15 @@ update: function() {
         this.toggleDebug()
     }
     if (showDebug) {
-        game.debug.cameraInfo(game.camera, 390, 32)
-        game.debug.text("Tacos consumed " + tacosConsumed, 32, 32)
-        game.debug.text("Tacos on screen " + entities.tacos.length, 32, 52)
-        game.debug.text("Current Health " + healthBarFill.width, 32, 72)
-        game.debug.text("Times Hopped " + timesHopped, 32, 92)
-        game.debug.text("Amount Healed " + amountHealed, 32, 112)
-        game.debug.text("Target location x = " + randomLocation, 32, 132)
-        game.debug.body(buddy)
+      game.debug.cameraInfo(game.camera, 390, 32)
+      game.debug.text("Tacos consumed " + tacosConsumed, 32, 32)
+      game.debug.text("Tacos on screen " + entities.tacos.length, 32, 52)
+      game.debug.text("Current Health " + healthBarFill.width, 32, 72)
+      game.debug.text("Times Hopped " + timesHopped, 32, 92)
+      game.debug.text("Amount Healed " + amountHealed, 32, 112)
+      game.debug.text("Target location x = " + randomLocation, 32, 132)
+      game.debug.text("Current Egg Amount = " + eggEntity.eggs.length, 32, 152)
+      game.debug.body(buddy)
     }
 
 

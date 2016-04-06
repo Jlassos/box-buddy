@@ -16,6 +16,7 @@ BoxBuddy.Preloader = {
         this.load.image('healthbarFull', 'assets/healthbarFull.png')
         this.load.image('healthbarEmpty', 'assets/healthbarEmpty.png')
         this.load.image('feedMe', 'assets/feedme.png')
+        this.load.image('egg', 'assets/egg.png')
         this.load.audio('tacoCrunch', 'assets/tacoCrunch.mp3')
     },
 
