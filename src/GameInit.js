@@ -1,7 +1,6 @@
 //	Create your Phaser game and inject it into the game div.
-    var game = new Phaser.Game('100%', '100%', Phaser.AUTO, 'game-div');
+    var game = new Phaser.Game(960, 640, Phaser.AUTO, 'game-div');
 //	Add the States your game has.
-//	You don't have to do this in the html, it could be done in your Boot state too, but for simplicity I'll keep it here.
     game.state.add('Boot', BoxBuddy.Boot);
     game.state.add('Preloader', BoxBuddy.Preloader);
     game.state.add('MainMenu', BoxBuddy.MainMenu);
